@@ -31,14 +31,23 @@
 
     .falling {
       position: absolute;
-      top: -100px;
-      animation: fall linear infinite;
+      top: -50px;
+      will-change: transform, opacity;
+      animation: fall linear forwards;
     }
 
     @keyframes fall {
-      0% { transform: translateY(-100px); opacity: 0; }
-      10% { opacity: 1; }
-      100% { transform: translateY(110vh); opacity: 0; }
+      0% {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
     }
 
     .glow-text {
@@ -46,24 +55,16 @@
       font-size: 16px;
       text-shadow: 0 0 10px #ff69b4, 0 0 15px #ff69b4;
       max-width: 90vw;
-      overflow-wrap: break-word;
       white-space: normal;
     }
 
     .heart {
       position: absolute;
       color: pink;
-      animation: fall linear infinite;
-      pointer-events: none;
       font-size: 15px;
-    }
-
-    .audio-player {
-      position: fixed;
-      width: 0;
-      height: 0;
-      opacity: 0;
       pointer-events: none;
+      will-change: transform, opacity;
+      animation: fall linear forwards;
     }
 
     #playButton {
@@ -84,13 +85,21 @@
 
     #instructionText {
       position: fixed;
-      top: 45%;
+      top: 46%;
       left: 50%;
       transform: translateX(-50%);
       color: #ffb6c1;
       font-size: 20px;
       text-shadow: 0 0 10px #ff69b4;
       user-select: none;
+    }
+
+    .audio-player {
+      position: fixed;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -102,7 +111,7 @@
   Your browser does not support the audio element.
 </audio>
 
-<div id="instructionText">Bấm vào nút dưới đây</div>
+<div id="instructionText">Hãy bấm vào nút dưới đây</div>
 <button id="playButton">Play</button>
 
 <script>
@@ -125,29 +134,15 @@
   const hearts = ["💗", "💓", "💖", "💞", "💝", "❤️", "💕"];
   const usedLefts = [];
 
-  // Ngôi sao nhấp nháy nền
-  for (let i = 0; i < 150; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.top = `${Math.random() * 100}vh`;
-    star.style.left = `${Math.random() * 100}vw`;
-    star.style.animationDuration = `${2 + Math.random() * 3}s`;
-    document.body.appendChild(star);
-  }
-
-  const playBtn = document.getElementById('playButton');
-  const instructionText = document.getElementById('instructionText');
-  const audio = document.getElementById('audio');
-
   function getUniqueLeft() {
     let left;
     let attempts = 0;
     do {
-      left = Math.floor(Math.random() * 91); // 0–90
+      left = Math.floor(Math.random() * 91);
       attempts++;
     } while (usedLefts.includes(left) && attempts < 50);
     usedLefts.push(left);
-    if (usedLefts.length > 20) usedLefts.shift(); // giữ danh sách ngắn
+    if (usedLefts.length > 30) usedLefts.shift();
     return left;
   }
 
@@ -157,6 +152,9 @@
       text.className = 'falling glow-text';
       text.textContent = line;
 
+      const duration = 10 + Math.random() * 5;
+      const delay = Math.random() * 15;
+
       if (line.includes("Việt Duy")) {
         text.style.left = '50%';
         text.style.transform = 'translateX(-50%)';
@@ -165,8 +163,8 @@
         text.style.left = `${left}vw`;
       }
 
-      text.style.animationDuration = `${10 + Math.random() * 5}s`;
-      text.style.animationDelay = `${Math.random() * 15}s`;
+      text.style.animationDuration = `${duration}s`;
+      text.style.animationDelay = `${delay}s`;
 
       document.body.appendChild(text);
     });
@@ -184,6 +182,10 @@
     }
   }
 
+  const audio = document.getElementById('audio');
+  const playBtn = document.getElementById('playButton');
+  const instructionText = document.getElementById('instructionText');
+
   playBtn.addEventListener('click', () => {
     audio.play();
     playBtn.style.display = 'none';
@@ -191,6 +193,16 @@
     createFallingTexts();
     createFallingHearts();
   });
+
+  // Tạo nền sao
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.top = `${Math.random() * 100}vh`;
+    star.style.left = `${Math.random() * 100}vw`;
+    star.style.animationDuration = `${2 + Math.random() * 3}s`;
+    document.body.appendChild(star);
+  }
 </script>
 
 </body>
