@@ -31,19 +31,18 @@
 
     .falling {
       position: absolute;
-      top: -100px;
       animation: fall linear infinite;
     }
 
     @keyframes fall {
-      0% { transform: translateY(-100px); opacity: 0; }
+      0% { transform: translateY(0); opacity: 0; }
       10% { opacity: 1; }
       100% { transform: translateY(110vh); opacity: 0; }
     }
 
     .glow-text {
       color: #ffb6c1;
-      font-size: 16px;
+      font-size: 18px;
       text-shadow: 0 0 10px #ff69b4, 0 0 15px #ff69b4;
       max-width: 90vw;
       overflow-wrap: break-word;
@@ -58,33 +57,6 @@
       font-size: 15px;
     }
 
-    #instructionText {
-      position: fixed;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #ffb6c1;
-      font-size: 20px;
-      text-shadow: 0 0 10px #ff69b4;
-      user-select: none;
-    }
-
-    #playButton {
-      position: fixed;
-      top: 52%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 12px 28px;
-      font-size: 18px;
-      background: #ff69b4;
-      border: none;
-      border-radius: 30px;
-      color: white;
-      cursor: pointer;
-      box-shadow: 0 0 15px #ff69b4;
-      user-select: none;
-    }
-
     .audio-player {
       position: fixed;
       width: 0;
@@ -96,7 +68,37 @@
     @media screen and (max-width: 600px) {
       .glow-text {
         font-size: 14px;
+        max-width: 90vw;
       }
+    }
+
+    #playButton {
+      position: fixed;
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%);
+      padding: 12px 28px;
+      font-size: 18px;
+      background: #ff69b4;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff69b4;
+      user-select: none;
+      z-index: 10;
+    }
+
+    #instructionText {
+      position: fixed;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ffb6c1;
+      font-size: 20px;
+      text-shadow: 0 0 10px #ff69b4;
+      user-select: none;
+      z-index: 10;
     }
   </style>
 </head>
@@ -107,7 +109,7 @@
   Your browser does not support the audio element.
 </audio>
 
-<div id="instructionText">Hãy bấm vào nút dưới đây</div>
+<div id="instructionText">Bấm vào nút dưới đây</div>
 <button id="playButton">Play</button>
 
 <script>
@@ -122,11 +124,12 @@
     "Nụ cười em là bình yên nhất",
     "Mỗi ngày có em là mỗi ngày ngọt ngào",
     "Một ánh nhìn, vạn lần rung động",
-    "Việt Duy  💖 Ánh Tuyết"
+    "Việt Duy 💖 Ánh Tuyết"
   ];
 
   const hearts = ["💗", "💓", "💖", "💞", "💝", "❤️", "💕"];
 
+  // Ngôi sao nền
   for (let i = 0; i < 150; i++) {
     const star = document.createElement('div');
     star.className = 'star';
@@ -141,13 +144,16 @@
   const audio = document.getElementById('audio');
 
   function createFallingTexts() {
-    textLines.forEach(line => {
+    textLines.forEach((line, index) => {
       const text = document.createElement('div');
       text.className = 'falling glow-text';
       text.textContent = line;
-      text.style.left = `${Math.random() * 90}vw`;
+
+      text.style.left = `${Math.random() * 80}vw`;
+      text.style.top = `${-5 - Math.random() * 15}vh`;
       text.style.animationDuration = `${10 + Math.random() * 5}s`;
-      text.style.animationDelay = `${Math.random() * 10}s`;
+      text.style.animationDelay = `${index * 0.8 + Math.random()}s`;
+
       document.body.appendChild(text);
     });
   }
@@ -158,6 +164,7 @@
       heart.className = 'heart falling';
       heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
       heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.top = `${-10 - Math.random() * 10}vh`;
       heart.style.animationDuration = `${5 + Math.random() * 6}s`;
       heart.style.animationDelay = `${Math.random() * 10}s`;
       document.body.appendChild(heart);
