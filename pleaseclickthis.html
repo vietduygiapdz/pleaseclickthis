@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PLEASE CLICK THIS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Ngôi sao */
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.8; }
+    }
+
+    .falling {
+      position: absolute;
+      top: -100px;
+      animation: fall linear infinite;
+      /* Bỏ white-space: nowrap; */
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100px); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(110vh); opacity: 0; }
+    }
+
+    .glow-text {
+      color: #ffb6c1;
+      font-size: 18px; /* nhỏ hơn */
+      text-shadow: 0 0 10px #ff69b4, 0 0 15px #ff69b4;
+      max-width: 90vw;
+      overflow-wrap: break-word;
+      white-space: normal; /* để xuống dòng nếu dài */
+    }
+
+    .heart {
+      position: absolute;
+      color: pink;
+      animation: fall linear infinite;
+      pointer-events: none;
+      font-size: 12px; /* nhỏ lại */
+    }
+
+    .audio-player {
+      position: fixed;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Responsive cho điện thoại */
+    @media screen and (max-width: 600px) {
+      .glow-text {
+        font-size: 14px;
+        max-width: 90vw;
+      }
+    }
+
+    /* Nút Play */
+    #playButton {
+      position: fixed;
+      left: 50%;
+      top: 60%;
+      transform: translateX(-50%);
+      padding: 12px 28px;
+      font-size: 18px;
+      background: #ff69b4;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 15px #ff69b4;
+      user-select: none;
+    }
+
+    #instructionText {
+      position: fixed;
+      top: 45%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ffb6c1;
+      font-size: 20px;
+      text-shadow: 0 0 10px #ff69b4;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nhạc nền -->
+<audio id="audio" loop>
+  <source src="https://github.com/vietduygiapdz/loveyou/raw/8d9cc83b0ba45c645bde7ba9562b460eb8aeac4b/utomp3.com%20-%20Ph%C3%A9p%20M%C3%A0u%20%C4%90%C3%A0n%20C%C3%A1%20G%E1%BB%97%20OST%20%20Mounter%20x%20MAYDAYs%20Minh%20T%E1%BB%91c%20%20Official%20MV%20(1).mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<div id="instructionText">Bấm vào nút dưới đây</div>
+<button id="playButton">Play</button>
+
+<script>
+  const textLines = [
+    "Chúc em yêu 01/06 vui vẻ, hạnh phúc",
+    "Em mãi là em bé đáng yêu của anh",
+    "Cảm ơn vì em đã ở bên anh",
+    "Thật may mắn vì có em bên đời",
+    "Mong rằng chúng ta sẽ bên nhau mãi mãi",
+    "Nơi bình yên nhất là được ở bên em",
+    "Anh yêu em nhiều hơn những gì có thể nói",
+    "Nụ cười em là bình yên nhất",
+    "Mỗi ngày có em là mỗi ngày ngọt ngào",
+    "Một ánh nhìn, vạn lần rung động",
+    "Việt Duy  💖 Ánh Tuyết"
+  ];
+
+  const hearts = ["💗", "💓", "💖", "💞", "💝", "❤️", "💕"];
+
+  // Tạo ngôi sao nhấp nháy nền
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.top = `${Math.random() * 100}vh`;
+    star.style.left = `${Math.random() * 100}vw`;
+    star.style.animationDuration = `${2 + Math.random() * 3}s`;
+    document.body.appendChild(star);
+  }
+
+  const playBtn = document.getElementById('playButton');
+  const instructionText = document.getElementById('instructionText');
+  const audio = document.getElementById('audio');
+
+  // Hàm tạo chữ rơi ngẫu nhiên
+  function createFallingTexts() {
+    textLines.forEach(line => {
+      const text = document.createElement('div');
+      text.className = 'falling glow-text';
+      text.textContent = line;
+
+      // vị trí ngang random từ 0 đến 90vw (để không tràn)
+      const left = Math.random() * 90;
+      text.style.left = `${left}vw`;
+
+      // thời gian rơi random từ 10 đến 15 giây
+      text.style.animationDuration = `${10 + Math.random() * 5}s`;
+
+      // delay random để không rơi cùng lúc
+      text.style.animationDelay = `${Math.random() * 15}s`;
+
+      document.body.appendChild(text);
+    });
+  }
+
+  // Hàm tạo trái tim rơi
+  function createFallingHearts() {
+    for (let i = 0; i < 40; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart falling';
+      heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+
+      heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.animationDuration = `${5 + Math.random() * 6}s`;
+      heart.style.animationDelay = `${Math.random() * 10}s`;
+
+      document.body.appendChild(heart);
+    }
+  }
+
+  playBtn.addEventListener('click', () => {
+    // Bật nhạc
+    audio.play();
+
+    // Ẩn nút và chữ hướng dẫn
+    playBtn.style.display = 'none';
+    instructionText.style.display = 'none';
+
+    // Tạo hiệu ứng chữ rơi + trái tim rơi
+    createFallingTexts();
+    createFallingHearts();
+  });
+</script>
+
+</body>
+</html>
